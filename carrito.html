@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - Clover PXM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        .cart-container {
+            background-color: white;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .btn-pagar {
+            background-color: #333;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-pagar:hover {
+            background-color: #444;
+            transform: scale(1.05);
+        }
+        .btn-pagar.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-pagar.active {
+            box-shadow: 0 0 10px rgba(0, 0, 255, 0.7); /* Glow effect */
+        }
+        .message-box {
+            display: none;
+            background-color: black;
+            color: white;
+            padding: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            border-radius: 10px;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Carrito de Compras</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="ropa.html">Ropa</a></li>
+                <li><a href="gorras.html">Gorras</a></li>
+                <li><a href="perfumes.html">Perfumes</a></li>
+                <li><a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="cart-container">
+        <h2>Tu Carrito</h2>
+        <div id="cartItems"></div>
+        <h3>Total: $<span id="totalAmount">0.00</span> MXN</h3>
+        <button id="payButton" class="btn-pagar disabled" onclick="procesarPago()" disabled>Confirmar Pago</button>
+    </div>
+
+    <div class="message-box" id="paymentMessage" onclick="cerrarMensaje()">
+        <p>Pago Completado con Éxito. ¡Gracias por tu compra!</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            cargarCarrito();
+        });
+
+        function cargarCarrito() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            document.getElementById("cart-count").textContent = cart.length;
+            mostrarCarrito(cart);
+            actualizarBotonPago(cart.length);
+        }
+
+        function mostrarCarrito(cart) {
+            const cartItemsDiv = document.getElementById("cartItems");
+            cartItemsDiv.innerHTML = "";  // Limpiar el carrito
+
+            let total = 0;
+            cart.forEach((item, index) => {
+                let div = document.createElement("div");
+                div.classList.add("cart-item");
+                div.innerHTML = `<p>${item.product} - $${item.price}</p>
+                                <button onclick="eliminarDelCarrito(${index})">Eliminar</button>`;
+                cartItemsDiv.appendChild(div);
+                total += item.price;
+            });
+
+            document.getElementById("totalAmount").textContent = total.toFixed(2);
+        }
+
+        function eliminarDelCarrito(index) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            cargarCarrito();
+        }
+
+        function procesarPago() {
+            let cart = [];
+            localStorage.setItem("cart", JSON.stringify(cart)); // Vaciamos el carrito
+            cargarCarrito();  // Actualizamos la vista del carrito
+            document.getElementById("paymentMessage").style.display = "block"; // Mostramos el mensaje de éxito
+        }
+
+        function cerrarMensaje() {
+            document.getElementById("paymentMessage").style.display = "none"; // Cerramos el mensaje de éxito
+        }
+
+        function actualizarBotonPago(cartLength) {
+            const payButton = document.getElementById("payButton");
+            if (cartLength === 0) {
+                payButton.classList.add("disabled");
+                payButton.disabled = true; // Desactivamos el botón
+            } else {
+                payButton.classList.remove("disabled");
+                payButton.classList.add("active"); // Activamos el efecto de glow
+                payButton.disabled = false; // Activamos el botón
+            }
+        }
+    </script>
+
+</body>
+</html>

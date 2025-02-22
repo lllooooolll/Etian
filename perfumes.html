@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfumes - Clover PXM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        .productos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .producto {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .producto:hover {
+            transform: scale(1.05);
+        }
+        .producto img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .producto h3 {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #333;
+        }
+        .producto p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            color: #666;
+        }
+        .producto button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .producto button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Perfumes</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="ropa.html">Ropa</a></li>
+                <li><a href="gorras.html">Gorras</a></li>
+                <li><a href="perfumes.html">Perfumes</a></li>
+                <li><a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="productos" class="productos-container"></section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            cargarProductosDesdeArchivo('perfumes.txt');
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            document.getElementById("cart-count").textContent = cart.length;
+        });
+
+        function cargarProductosDesdeArchivo(archivo) {
+            fetch(archivo)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pudo cargar el archivo');
+                    }
+                    return response.text();
+                })
+                .then(contenido => {
+                    mostrarProductos(contenido);
+                })
+                .catch(error => {
+                    console.error('Error al cargar el archivo:', error);
+                });
+        }
+
+        function mostrarProductos(texto) {
+            const lines = texto.split("\n");
+            let productContainer = document.getElementById("productos");
+            productContainer.innerHTML = "";
+
+            lines.forEach(line => {
+                let [nombre, precio] = line.split(",");
+                if (nombre && precio) {
+                    let div = document.createElement("div");
+                    div.classList.add("producto");
+
+                    // Generación del nombre de la imagen (reemplazar espacios por guiones bajos)
+                    let imagen = nombre.toLowerCase().replace(/\s+/g, '_') + ".jpg"; // e.g., "Perfume Floral" -> "perfume_floral.jpg"
+                    
+                    // Verifica si la imagen existe en la carpeta "imagenes"
+                    let imgSrc = "imagenes/" + imagen;
+
+                    div.innerHTML = `
+                        <img src="${imgSrc}" alt="${nombre}">
+                        <h3>${nombre}</h3>
+                        <p>$${precio}</p>
+                        <button onclick="addToCart('${nombre}', ${precio})">Agregar al carrito</button>
+                    `;
+                    productContainer.appendChild(div);
+                }
+            });
+        }
+
+        function addToCart(product, price) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.push({ product, price });
+            localStorage.setItem("cart", JSON.stringify(cart));
+            document.getElementById("cart-count").textContent = cart.length;
+            alert(product + " ha sido agregado al carrito.");
+        }
+    </script>
+
+</body>
+</html>

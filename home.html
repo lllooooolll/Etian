@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoT</title>
+    <style>
+        /* Reset de márgenes y rellenos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Fondo blanco y estructura principal */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff; /* Fondo blanco */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Encabezado más opaco */
+        header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            position: absolute;
+            top: 0;
+            background: #000000; /* Más oscuro y menos transparente */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+            backdrop-filter: blur(3px); /* Suaviza el fondo */
+        }
+
+        /* Logo */
+        .logo {
+            height: 50px; /* Ajusta según tamaño del logo */
+            margin-right: 15px;
+        }
+
+        /* Contenedor del contenido */
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-top: 250px; /* Bajé más los botones */
+        }
+
+        /* Título */
+        h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Estilo de los botones con glow */
+        .btn {
+            background-color: #222;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 15px; /* Más espacio entre botones */
+            font-size: 1rem;
+            text-transform: uppercase;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            width: 200px;
+            text-align: center;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(0, 10, 250, 0.5); /* Glow navy */
+        }
+
+        .btn:hover {
+            background-color: #444;
+            box-shadow: 0 0 25px rgba(0, 10, 250, 0.8); /* Glow más intenso */
+        }
+
+        /* Burbujas viscosas */
+        .drop {
+            position: absolute;
+            bottom: -50px;
+            width: 40px;
+            height: 40px;
+            background-color: #000080; /* Azul Navy */
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 10, 250, 0.5);
+            opacity: 0.8;
+            animation: rise 5s infinite ease-in-out;
+        }
+
+        /* Animación mejorada para las burbujas */
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.9;
+                filter: brightness(1);
+            }
+            50% {
+                transform: translateY(-50vh) scale(1.2, 0.8);
+                opacity: 0.6;
+                filter: brightness(1.5);
+            }
+            100% {
+                transform: translateY(-100vh) scale(0.9, 1.1);
+                opacity: 0.2; /* Más opaco antes de desaparecer */
+                filter: brightness(2);
+            }
+        }
+
+        /* Varias burbujas con tiempos aleatorios */
+        .drop:nth-child(1) { left: 10%; animation-duration: 4s; animation-delay: 0s; }
+        .drop:nth-child(2) { left: 30%; animation-duration: 5s; animation-delay: 1s; }
+        .drop:nth-child(3) { left: 50%; animation-duration: 6s; animation-delay: 2s; }
+        .drop:nth-child(4) { left: 70%; animation-duration: 4.5s; animation-delay: 1.5s; }
+        .drop:nth-child(5) { left: 90%; animation-duration: 5.5s; animation-delay: 0.5s; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado con logo -->
+    <header>
+
+        <h1>EcoT</h1>
+    </header>
+
+    <div class="content-container">
+        <!-- Botones -->
+        <a href="index.html" class="btn">Tienda Online</a>
+        <a href="https://www.instagram.com/cloverpxm" class="btn" target="_blank">Instagram</a>
+        <a href="proveedores.html" class="btn">Nuestros Proveedores</a>
+    </div>
+
+    <!-- Gotas que suben -->
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+
+    <!-- Audio de burbuja -->
+    <audio id="bubble-sound" src="bubble.mp3"></audio>
+
+    <script>
+        // Función para reproducir el sonido suavemente
+        function playBubbleSound() {
+            const sound = document.getElementById('bubble-sound');
+            sound.volume = 0.1; // Volumen muy bajo
+            sound.currentTime = 0;
+            sound.play().catch(error => console.error("Error al reproducir sonido:", error));
+        }
+
+        // Obtener todas las burbujas y agregar evento para que suene cuando desaparecen
+        document.querySelectorAll('.drop').forEach(drop => {
+            drop.addEventListener('animationiteration', playBubbleSound);
+        });
+    </script>
+
+<p>version 0.0.1</p>
+
+</body>
+</html>

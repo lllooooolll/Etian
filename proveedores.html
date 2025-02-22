@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Proveedores - Clover PXM</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .content-container {
+            text-align: center;
+            padding: 50px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #222;
+            margin-bottom: 30px;
+        }
+
+        .supplier-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .supplier-item {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #222;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .back-btn:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content-container">
+        <h1>Nuestros Proveedores</h1>
+        
+        <ul class="supplier-list" id="proveedores-list"></ul>
+
+        <a href="home.html" class="back-btn">Volver a la Tienda</a>
+    </div>
+
+    <script>
+        async function cargarProveedores() {
+            try {
+                const response = await fetch('proveedores.txt');
+                const text = await response.text();
+                
+                const lines = text.split("\n");
+                const listContainer = document.getElementById("proveedores-list");
+
+                listContainer.innerHTML = ""; // Limpiar la lista antes de agregar datos
+
+                lines.forEach(line => {
+                    const [nombre, url] = line.split(",");
+                    if (nombre && url) {
+                        let li = document.createElement("li");
+                        li.className = "supplier-item";
+                        li.innerHTML = `<a href="https://${url.trim()}" target="_blank">${nombre.trim()}</a>`;
+                        listContainer.appendChild(li);
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error cargando los proveedores:", error);
+            }
+        }
+
+        // Cargar los proveedores cuando se cargue la página
+        document.addEventListener("DOMContentLoaded", cargarProveedores);
+    </script>
+
+</body>
+</html>
